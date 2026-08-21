@@ -145,9 +145,10 @@ LAUNCHER="$HOME/.local/bin/palma"
 mkdir -p "$(dirname "$LAUNCHER")"
 cat > "$LAUNCHER" <<SCRIPT
 #!/usr/bin/env bash
-if [ "\${1:-}" = "--update" ]; then
-    exec bash "$INSTALL_DIR/guncelle.sh"
-fi
+case "\${1:-}" in
+    --update)    exec bash "$INSTALL_DIR/guncelle.sh" ;;
+    --uninstall) exec bash "$INSTALL_DIR/kaldir.sh" ;;
+esac
 exec "$PYTHON" "$INSTALL_DIR/src/__main__.py" "\$@"
 SCRIPT
 chmod +x "$LAUNCHER"

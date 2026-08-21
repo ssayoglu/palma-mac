@@ -62,6 +62,20 @@ Güncelleme betiği:
 - Yerel değişiklikleri koruyarak günceller
 - .app ve CLI launcher'ı günceller
 
+## 🗑️ Kaldırma
+
+```bash
+palma --uninstall
+```
+
+veya:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ssayoglu/palma-mac/main/kaldir.sh | bash
+```
+
+> AKIS PKCS#11 sürücüsü (`libakisp11.dylib`) ve Homebrew/Python **korunur**, yalnızca PALMA kaldırılır.
+
 ## 🎯 Kullanım
 
 ### Launchpad / Uygulamalar
@@ -74,6 +88,7 @@ palma              # GUI ile başlat
 palma --server     # Tarayıcı sunucusu (headless)
 palma --test       # Kart bağlantı testi
 palma --update     # Güncelleme kontrolü
+palma --uninstall  # Kaldırma
 palma --version    # Sürüm bilgisi
 ```
 

@@ -93,27 +93,76 @@ git pull --ff-only origin main --quiet 2>/dev/null || {
 NEW_VERSION=$(grep -o 'version.*[0-9]\+\.[0-9]\+\.[0-9]\+' src/__main__.py 2>/dev/null | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' | head -1 || echo "?")
 NEW_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "?")
 
-# ───────────────────── .app ikonunu güncelle
+# ───────────────────── .app oluştur/güncelle
 APP_DIR="$HOME/Applications/PALMA.app"
-if [ -d "$APP_DIR" ] && [ -f "resources/palma.icns" ]; then
-    cp resources/palma.icns "$APP_DIR/Contents/Resources/palma.icns" 2>/dev/null || true
-    touch "$APP_DIR"
-    log ".app ikonu güncellendi"
+PYTHON="$(command -v python3.13 || echo /opt/homebrew/bin/python3.13)"
+
+if [ ! -d "$APP_DIR" ]; then
+    log "PALMA.app oluşturuluyor..."
+    mkdir -p "$APP_DIR/Contents/MacOS"
+    mkdir -p "$APP_DIR/Contents/Resources"
+
+    cat > "$APP_DIR/Contents/Info.plist" <<'PLIST'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>PALMA</string>
+    <key>CFBundleDisplayName</key>
+    <string>PALMA — Akıllı Kart Yönetimi</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.turktrust.palma-mac</string>
+    <key>CFBundleVersion</key>
+    <string>2.9.0</string>
+    <key>CFBundleShortVersionString</key>
+    <string>2.9.0</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleExecutable</key>
+    <string>palma</string>
+    <key>CFBundleIconFile</key>
+    <string>palma</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>14.0</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+</dict>
+</plist>
+PLIST
 fi
 
-# ───────────────────── palma CLI'ı güncelle
-PYTHON="$(command -v python3.13 || echo /opt/homebrew/bin/python3.13)"
-LAUNCHER="$HOME/.local/bin/palma"
-if [ -f "$LAUNCHER" ]; then
-    cat > "$LAUNCHER" <<SCRIPT
-#!/usr/bin/env bash
-if [ "\${1:-}" = "--update" ]; then
-    exec bash "$INSTALL_DIR/guncelle.sh"
+# Başlatıcı (her zaman güncelle — yol değişmiş olabilir)
+cat > "$APP_DIR/Contents/MacOS/palma" <<APPLAUNCHER
+#!/bin/bash
+export PATH="/opt/homebrew/bin:\$PATH"
+PY="\$(command -v python3.13 || echo /opt/homebrew/bin/python3.13)"
+exec "\$PY" "$INSTALL_DIR/src/__main__.py" "\$@"
+APPLAUNCHER
+chmod +x "$APP_DIR/Contents/MacOS/palma"
+
+# İkon
+if [ -f "$INSTALL_DIR/resources/palma.icns" ]; then
+    cp "$INSTALL_DIR/resources/palma.icns" "$APP_DIR/Contents/Resources/palma.icns" 2>/dev/null || true
 fi
+
+touch "$APP_DIR"
+killall Dock 2>/dev/null || true
+log "PALMA.app hazır ✓"
+
+# ───────────────────── palma CLI güncelle
+LAUNCHER="$HOME/.local/bin/palma"
+mkdir -p "$(dirname "$LAUNCHER")"
+cat > "$LAUNCHER" <<SCRIPT
+#!/usr/bin/env bash
+case "\${1:-}" in
+    --update)    exec bash "$INSTALL_DIR/guncelle.sh" ;;
+    --uninstall) exec bash "$INSTALL_DIR/kaldir.sh" ;;
+esac
 exec "$PYTHON" "$INSTALL_DIR/src/__main__.py" "\$@"
 SCRIPT
-    chmod +x "$LAUNCHER"
-fi
+chmod +x "$LAUNCHER"
+log "CLI güncellendi ✓"
 
 echo ""
 echo -e "${GREEN}${BOLD}╔══════════════════════════════════════════════════╗${NC}"
