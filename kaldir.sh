@@ -9,9 +9,8 @@
 # ─────────────────────────────────────────────────────────
 set -euo pipefail
 
-if [ ! -t 0 ]; then
-    exec < /dev/tty
-fi
+# curl | bash desteği
+sudo -v < /dev/tty 2>/dev/null || true
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -40,7 +39,7 @@ echo -e "    ${BLUE}•${NC} AKIS PKCS#11 sürücüsü (/usr/local/lib/libakisp1
 echo -e "    ${BLUE}•${NC} Homebrew / Python 3.13"
 echo ""
 
-read -rp "Kaldırmak istediğinizden emin misiniz? [e/H]: " confirm
+read -rp "Kaldırmak istediğinizden emin misiniz? [e/H]: " confirm < /dev/tty
 if [[ ! "$confirm" =~ ^[eEyY]$ ]]; then
     echo "İptal edildi."
     exit 0

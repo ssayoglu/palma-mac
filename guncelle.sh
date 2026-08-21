@@ -7,9 +7,8 @@
 # ─────────────────────────────────────────────────────────
 set -euo pipefail
 
-if [ ! -t 0 ]; then
-    exec < /dev/tty
-fi
+# curl | bash desteği
+sudo -v < /dev/tty 2>/dev/null || true
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
