@@ -163,6 +163,61 @@ else
     export PATH="$HOME/.local/bin:$PATH"
 fi
 
+# ───────────────────── macOS .app oluştur
+APP_DIR="$HOME/Applications/PALMA.app"
+log "macOS uygulaması oluşturuluyor: $APP_DIR"
+
+mkdir -p "$APP_DIR/Contents/MacOS"
+mkdir -p "$APP_DIR/Contents/Resources"
+
+cat > "$APP_DIR/Contents/Info.plist" <<'PLIST'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>PALMA</string>
+    <key>CFBundleDisplayName</key>
+    <string>PALMA — Akıllı Kart Yönetimi</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.turktrust.palma-mac</string>
+    <key>CFBundleVersion</key>
+    <string>2.9.0</string>
+    <key>CFBundleShortVersionString</key>
+    <string>2.9.0</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleExecutable</key>
+    <string>palma</string>
+    <key>CFBundleIconFile</key>
+    <string>palma</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>14.0</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+</dict>
+</plist>
+PLIST
+
+# İkon
+if [ -f "$INSTALL_DIR/resources/palma.icns" ]; then
+    cp "$INSTALL_DIR/resources/palma.icns" "$APP_DIR/Contents/Resources/palma.icns"
+fi
+
+# Başlatıcı
+cat > "$APP_DIR/Contents/MacOS/palma" <<APPLAUNCHER
+#!/bin/bash
+export PATH="/opt/homebrew/bin:\\\$PATH"
+PYTHON="\\\$(command -v python3.13 || echo /opt/homebrew/bin/python3.13)"
+exec "\\\$PYTHON" "$INSTALL_DIR/src/__main__.py" "\\\$@"
+APPLAUNCHER
+chmod +x "$APP_DIR/Contents/MacOS/palma"
+
+# Dock'u yenile
+touch "$APP_DIR"
+killall Dock 2>/dev/null || true
+log "PALMA.app oluşturuldu ✓ (Launchpad'de görünecek)"
+
 # ───────────────────── Tamamlandı
 echo ""
 echo -e "${GREEN}${BOLD}╔══════════════════════════════════════════════════╗${NC}"
@@ -170,12 +225,10 @@ echo -e "${GREEN}${BOLD}║         ✓ Kurulum tamamlandı!                   �
 echo -e "${GREEN}${BOLD}╚══════════════════════════════════════════════════╝${NC}"
 echo ""
 echo -e "  ${BOLD}Başlatma:${NC}"
-echo -e "    ${BLUE}palma${NC}            GUI ile başlat"
+echo -e "    ${BLUE}PALMA.app${NC}        Uygulamalar'dan veya Launchpad'den"
+echo -e "    ${BLUE}palma${NC}            Terminal'den GUI ile"
 echo -e "    ${BLUE}palma --server${NC}   Tarayıcı sunucusu (headless)"
 echo -e "    ${BLUE}palma --test${NC}     Kart bağlantı testi"
-echo ""
-echo -e "  ${BOLD}Alternatif:${NC}"
-echo -e "    ${BLUE}cd $INSTALL_DIR && ./palma.sh${NC}"
 echo ""
 
 # İlk test
@@ -186,3 +239,4 @@ if [ -f "$PKCS11_LIB" ]; then
 fi
 
 echo -e "${GREEN}İyi kullanımlar!${NC}"
+
