@@ -81,27 +81,46 @@ PY_VER=$($PYTHON --version 2>&1)
 TK_VER=$($PYTHON -c "import tkinter; print(tkinter.TkVersion)" 2>/dev/null || echo "?")
 log "Python: $PY_VER — Tk: $TK_VER"
 
-# ───────────────────── AKIS sürücü kontrolü
+# ───────────────────── AKIS sürücü kontrolü ve kurulumu
 PKCS11_LIB="/usr/local/lib/libakisp11.dylib"
+DRIVER_PKG="$INSTALL_DIR/drivers/Akia_macos_arm_6_8_2.pkg"
+
+_install_akis_driver() {
+    if [ -f "$DRIVER_PKG" ]; then
+        log "AKIS sürücüsü repo içinden kuruluyor..."
+        log "  → $DRIVER_PKG"
+        warn "Kurulum için yönetici şifresi gerekecektir."
+        sudo installer -pkg "$DRIVER_PKG" -target / 2>&1 | tail -3
+        if [ -f "$PKCS11_LIB" ]; then
+            log "AKIS sürücüsü kuruldu ✓"
+            return 0
+        else
+            warn "Kurulum tamamlandı ama sürücü dosyası bulunamadı."
+            return 1
+        fi
+    else
+        return 1
+    fi
+}
+
 if [ -f "$PKCS11_LIB" ]; then
     log "AKIS PKCS#11 sürücüsü bulundu ✓"
-    # ARM64 dilimi var mı?
     if file "$PKCS11_LIB" | grep -q "arm64"; then
         log "  → ARM64 desteği mevcut ✓"
     else
-        warn "  → ARM64 dilimi bulunamadı! Sürücüyü güncelleyin:"
-        warn "    https://eimza.bilgem.tubitak.gov.tr/akis-surucu"
+        warn "  → ARM64 dilimi bulunamadı! Sürücü güncelleniyor..."
+        _install_akis_driver || warn "Sürücü güncellenemedi. Manuel olarak kurun."
     fi
 else
-    echo ""
-    warn "AKIS PKCS#11 sürücüsü bulunamadı!"
-    warn "Uygulamanın çalışması için TÜBİTAK AKIS sürücüsü gereklidir."
-    warn ""
-    warn "İndirme: https://eimza.bilgem.tubitak.gov.tr/akis-surucu"
-    warn "Kurulum: .pkg dosyasını indirip çift tıklayarak kurun."
-    warn ""
-    warn "Sürücü kurulduktan sonra uygulamayı başlatabilirsiniz."
-    echo ""
+    log "AKIS PKCS#11 sürücüsü bulunamadı, kuruluyor..."
+    if ! _install_akis_driver; then
+        echo ""
+        warn "AKIS sürücüsü otomatik kurulamadı!"
+        warn "Manuel kurulum:"
+        warn "  1. https://eimza.bilgem.tubitak.gov.tr/akis-surucu adresinden indirin"
+        warn "  2. .pkg dosyasını çift tıklayarak kurun"
+        warn ""
+    fi
 fi
 
 # ───────────────────── Projeyi indir/güncelle
