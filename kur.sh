@@ -168,13 +168,14 @@ else
 fi
 
 # ───────────────────── macOS .app oluştur
-APP_DIR="$HOME/Applications/PALMA.app"
+APP_DIR="/Applications/PALMA.app"
 log "macOS uygulaması oluşturuluyor: $APP_DIR"
+warn "Uygulamalar klasörüne yazmak için yönetici şifresi gerekebilir."
 
-mkdir -p "$APP_DIR/Contents/MacOS"
-mkdir -p "$APP_DIR/Contents/Resources"
+sudo mkdir -p "$APP_DIR/Contents/MacOS"
+sudo mkdir -p "$APP_DIR/Contents/Resources"
 
-cat > "$APP_DIR/Contents/Info.plist" <<'PLIST'
+sudo tee "$APP_DIR/Contents/Info.plist" > /dev/null <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -205,22 +206,22 @@ PLIST
 
 # İkon
 if [ -f "$INSTALL_DIR/resources/palma.icns" ]; then
-    cp "$INSTALL_DIR/resources/palma.icns" "$APP_DIR/Contents/Resources/palma.icns"
+    sudo cp "$INSTALL_DIR/resources/palma.icns" "$APP_DIR/Contents/Resources/palma.icns"
 fi
 
 # Başlatıcı
-cat > "$APP_DIR/Contents/MacOS/palma" <<APPLAUNCHER
+sudo tee "$APP_DIR/Contents/MacOS/palma" > /dev/null <<APPLAUNCHER
 #!/bin/bash
 export PATH="/opt/homebrew/bin:\\\$PATH"
-PYTHON="\\\$(command -v python3.13 || echo /opt/homebrew/bin/python3.13)"
-exec "\\\$PYTHON" "$INSTALL_DIR/src/__main__.py" "\\\$@"
+PY="\\\$(command -v python3.13 || echo /opt/homebrew/bin/python3.13)"
+exec "\\\$PY" "$INSTALL_DIR/src/__main__.py" "\\\$@"
 APPLAUNCHER
-chmod +x "$APP_DIR/Contents/MacOS/palma"
+sudo chmod +x "$APP_DIR/Contents/MacOS/palma"
 
 # Dock'u yenile
-touch "$APP_DIR"
+sudo touch "$APP_DIR"
 killall Dock 2>/dev/null || true
-log "PALMA.app oluşturuldu ✓ (Launchpad'de görünecek)"
+log "PALMA.app oluşturuldu ✓ (Uygulamalar klasöründe)"
 
 # ───────────────────── Tamamlandı
 echo ""

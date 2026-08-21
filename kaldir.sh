@@ -45,9 +45,9 @@ fi
 echo ""
 
 # ───────────────────── PALMA.app
-APP_DIR="$HOME/Applications/PALMA.app"
+APP_DIR="/Applications/PALMA.app"
 if [ -d "$APP_DIR" ]; then
-    rm -rf "$APP_DIR"
+    sudo rm -rf "$APP_DIR"
     log "PALMA.app kaldırıldı ✓"
 else
     log "PALMA.app bulunamadı, atlanıyor"
