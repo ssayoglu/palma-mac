@@ -40,7 +40,7 @@ Bu komut otomatik olarak:
 - ✅ Python 3.13 + tkinter kurar
 - ✅ AKIS PKCS#11 sürücüsünü kurar (`libakisp11.dylib`)
 - ✅ Projeyi `~/palma-mac` dizinine indirir
-- ✅ **PALMA.app** oluşturur (Launchpad'de görünür)
+- ✅ **PALMA.app**'i `/Applications` klasörüne kurar *(sudo şifresi gerekir)*
 - ✅ `palma` komutunu PATH'e ekler
 - ✅ Kart bağlantı testini çalıştırır
 
@@ -78,8 +78,8 @@ curl -fsSL https://raw.githubusercontent.com/ssayoglu/palma-mac/main/kaldir.sh |
 
 ## 🎯 Kullanım
 
-### Launchpad / Uygulamalar
-Kurulumdan sonra **PALMA** uygulaması Launchpad'de ve `~/Applications` dizininde görünür. Tıklayarak başlatın.
+### Uygulamalar / Launchpad
+Kurulumdan sonra **PALMA** uygulaması Finder → Uygulamalar klasöründe (`/Applications`) ve Launchpad'de görünür.
 
 ### Terminal
 
