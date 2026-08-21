@@ -6,6 +6,12 @@
 # ─────────────────────────────────────────────────────────
 set -euo pipefail
 
+# curl | bash desteği: stdin'i terminal'e yönlendir
+# (pipe üzerinden çalıştırılınca sudo/brew şifre okuyamaz)
+if [ ! -t 0 ]; then
+    exec < /dev/tty
+fi
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -212,9 +218,9 @@ fi
 # Başlatıcı
 sudo tee "$APP_DIR/Contents/MacOS/palma" > /dev/null <<APPLAUNCHER
 #!/bin/bash
-export PATH="/opt/homebrew/bin:\\\$PATH"
-PY="\\\$(command -v python3.13 || echo /opt/homebrew/bin/python3.13)"
-exec "\\\$PY" "$INSTALL_DIR/src/__main__.py" "\\\$@"
+export PATH="/opt/homebrew/bin:\$PATH"
+PY="\$(command -v python3.13 || echo /opt/homebrew/bin/python3.13)"
+exec "\$PY" "$INSTALL_DIR/src/__main__.py" "\$@"
 APPLAUNCHER
 sudo chmod +x "$APP_DIR/Contents/MacOS/palma"
 
