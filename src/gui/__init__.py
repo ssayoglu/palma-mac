@@ -1,0 +1,1 @@
+# PALMA macOS — GUI modülü
