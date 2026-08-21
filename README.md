@@ -32,7 +32,7 @@ TÜRKTRUST akıllı kart (e-imza/e-mühür) yönetimi ve tarayıcı entegrasyonu
 ### Hızlı Kurulum (Tek Komut)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/saidsurucu/palma-mac/main/kur.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ssayoglu/palma-mac/main/kur.sh | bash
 ```
 
 Bu komut otomatik olarak:
@@ -75,7 +75,7 @@ file /usr/local/lib/libakisp11.dylib
 
 ```bash
 # Depoyu klonlayın
-git clone https://github.com/KULLANICI_ADI/palma-mac.git
+git clone https://github.com/ssayoglu/palma-mac.git
 cd palma-mac
 
 # Çalıştırılabilir izni verin

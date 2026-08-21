@@ -2,7 +2,7 @@
 # ─────────────────────────────────────────────────────────
 #  PALMA macOS ARM64 — Tek Komutla Kurulum
 #  Kullanım:
-#    curl -fsSL https://raw.githubusercontent.com/KULLANICI/palma-mac/main/kur.sh | bash
+#    curl -fsSL https://raw.githubusercontent.com/ssayoglu/palma-mac/main/kur.sh | bash
 # ─────────────────────────────────────────────────────────
 set -euo pipefail
 
@@ -14,7 +14,7 @@ BOLD='\033[1m'
 NC='\033[0m'
 
 INSTALL_DIR="$HOME/palma-mac"
-REPO_URL="https://github.com/saidsurucu/palma-mac.git"
+REPO_URL="https://github.com/ssayoglu/palma-mac.git"
 
 log()  { echo -e "${GREEN}>>>${NC} $*"; }
 warn() { echo -e "${YELLOW}⚠${NC}  $*"; }
