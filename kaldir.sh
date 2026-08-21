@@ -9,9 +9,6 @@
 # ─────────────────────────────────────────────────────────
 set -euo pipefail
 
-# curl | bash desteği
-sudo -v < /dev/tty 2>/dev/null || true
-
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'

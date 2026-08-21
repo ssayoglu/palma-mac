@@ -6,10 +6,6 @@
 # ─────────────────────────────────────────────────────────
 set -euo pipefail
 
-# curl | bash desteği: sudo şifresini başta al
-# (exec < /dev/tty KULLANMA — bash script okumayı keser!)
-sudo -v < /dev/tty 2>/dev/null || true
-
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -51,7 +47,7 @@ elif [ -x /opt/homebrew/bin/brew ]; then
     eval "$($BREW shellenv zsh 2>/dev/null)" || true
 else
     log "Homebrew kuruluyor..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" < /dev/tty
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     BREW=/opt/homebrew/bin/brew
     eval "$($BREW shellenv zsh 2>/dev/null)" || true
     log "Homebrew kuruldu ✓"
